@@ -182,6 +182,11 @@ class PaymentPlaceEnd implements ObserverInterface
                 true
             );
 
+            // exclude validation for specific payment methods
+            if (in_array($order->getPayment()->getMethod(), $this->forterConfig->getPaymentMethodExcludes())) {
+                return;
+            }
+
             $data = $this->requestBuilderOrder->buildTransaction($order, 'AFTER_PAYMENT_ACTION');
             $url = self::VALIDATION_API_ENDPOINT . $order->getIncrementId();
             $forterResponse = $this->abstractApi->sendApiRequest($url, json_encode($data));

@@ -533,6 +533,12 @@ class Config
         return $this->getConfigValue('advanced_settings_cc_listener/class_id_identifier', $scope, $scopeId);
     }
 
+    public function getPaymentMethodExcludes($scope = null, $scopeId = null)
+    {
+        $payment_method_excludes = $this->getConfigValue('advanced_settings/payment_method_excludes', $scope, $scopeId);
+        return explode(',', $payment_method_excludes ? $payment_method_excludes : '');
+    }
+
     /**
      * @method getVerificationResultsMap
      * @return array

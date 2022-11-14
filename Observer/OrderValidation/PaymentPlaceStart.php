@@ -178,6 +178,10 @@ class PaymentPlaceStart implements ObserverInterface
                 return;
             }
 
+            // exclude validation for specific payment methods
+            if (in_array($order->getPayment()->getMethod(), $this->config->getPaymentMethodExcludes())) {
+                return;
+            }
 
             if ($this->config->getIsCron()) {
                 $currentTime = $this->dateTime->gmtDate();

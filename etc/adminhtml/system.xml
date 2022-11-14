@@ -242,6 +242,12 @@
 }</pre><p>]]>
                     </comment>
                 </field>
+                <field id="payment_method_excludes" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Payment Method Excludes</label>
+                    <comment>
+                        Payment method codes to exclude separated by comma. 
+                    </comment>
+                </field>
               </group>
               <group id="advanced_settings_cc_listener" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Advanced Settings Pre Auth</label>
