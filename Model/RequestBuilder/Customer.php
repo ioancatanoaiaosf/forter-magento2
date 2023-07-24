@@ -60,13 +60,20 @@ class Customer
     private $forterConfig;
 
     /**
+     * @var CustomerFactory
+     */
+    private $customerFactory;
+
+    /**
      * Customer constructor.
      * @param OrderFactory $orderFactory
      * @param Review $review
      * @param Session $session
+     * @param WishlistProviderInterface $wishlistProvider
      * @param StoreManagerInterface $storeManager
      * @param Subscriber $subscriber
-     * @param Config $forterConfig
+     * @param CustomerFactory $customerFactory
+     * @param ForterConfig $forterConfig
      */
     public function __construct(
         OrderFactory $orderFactory,
