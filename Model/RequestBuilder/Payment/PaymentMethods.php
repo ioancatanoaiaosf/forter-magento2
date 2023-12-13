@@ -254,7 +254,7 @@ class PaymentMethods
                 $detailsArray['verificationResults']['authorizationProcessedWith3DS'] = $additonal_data['threeDAuthenticated'] === 'true' ? true : false;
             }
             if (isset($additonal_data['threeDOffered'])) {
-                $detailsArray['authenticationTriggered']['liabilityShift'] = $additonal_data['threeDOffered'] === 'true' ? true : false;
+                $detailsArray['verificationResults']['authenticationTriggered'] = $additonal_data['threeDOffered'] === 'true' ? true : false;
             }
             if (isset($additonal_data['threeDAuthenticatedResponse'])) {
                 $detailsArray['verificationResults']['threeDsStatusCode'] = $additonal_data['threeDAuthenticatedResponse'] !== 'N/A' ? $additonal_data['threeDAuthenticatedResponse'] : '';
