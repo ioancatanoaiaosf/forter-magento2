@@ -250,6 +250,12 @@ class PaymentMethods
             if (isset($additonal_data['liabilityShift'])) {
                 $detailsArray['verificationResults']['liabilityShift'] = $additonal_data['liabilityShift'] === 'true' ? true : false;
             }
+            if (isset($additonal_data['threeDAuthenticated'])) {
+                $detailsArray['verificationResults']['authorizationProcessedWith3DS'] = $additonal_data['threeDAuthenticated'] === 'true' ? true : false;
+            }
+            if (isset($additonal_data['threeDOffered'])) {
+                $detailsArray['authenticationTriggered']['liabilityShift'] = $additonal_data['threeDOffered'] === 'true' ? true : false;
+            }
             if (isset($additonal_data['threeDAuthenticatedResponse'])) {
                 $detailsArray['verificationResults']['threeDsStatusCode'] = $additonal_data['threeDAuthenticatedResponse'] !== 'N/A' ? $additonal_data['threeDAuthenticatedResponse'] : '';
             }
@@ -258,6 +264,9 @@ class PaymentMethods
             }
             if (isset($additonal_data['challengeCancel'])) {
                 $detailsArray['verificationResults']['threeDsChallengeCancelCode'] = $additonal_data['challengeCancel'];
+            }
+            if (isset($additonal_data['cavv'])) {
+                $detailsArray['verificationResults']['cavvResult'] = $additonal_data['cavv'];
             }
             $detailsArray['fullResponsePayload'] = $additonal_data;
         }
