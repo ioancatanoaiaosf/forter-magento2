@@ -246,6 +246,9 @@ class PaymentMethods
             if (isset($additonal_data['refusalReasonRaw'])) {
                 $detailsArray['verificationResults']['processorResponseText'] = $additonal_data['refusalReasonRaw'];
             }
+            if (isset($additonal_data['eci'])) {
+                $detailsArray['verificationResults']['eciValue']= $additonal_data['eci'] === 'N/A' ? '' : $additonal_data['eci'];
+            }
             //3DS mapping
             if (isset($additonal_data['liabilityShift'])) {
                 $detailsArray['verificationResults']['liabilityShift'] = $additonal_data['liabilityShift'] === 'true' ? true : false;
