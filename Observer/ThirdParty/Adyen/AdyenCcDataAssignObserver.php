@@ -11,6 +11,7 @@ class AdyenCcDataAssignObserver extends AbstractDataAssignObserver
 {
     const EXPIRATION_DATE = 'expiryDate';
     const LAST_4 = 'cardSummary';
+    const CARD_BIN  = 'cardBin';
     const CARD_BRAND = 'paymentMethod';
     const ADDITIONAL_DATA = 'additionalData';
 
@@ -23,7 +24,8 @@ class AdyenCcDataAssignObserver extends AbstractDataAssignObserver
     private static $approvedAdditionalDataKeys = [
         self::EXPIRATION_DATE,
         self::LAST_4,
-        self::CARD_BRAND
+        self::CARD_BRAND,
+        self::CARD_BIN
     ];
 
     /**
