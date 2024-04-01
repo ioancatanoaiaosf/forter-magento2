@@ -54,6 +54,16 @@ class BasicInfo
         }
         if (\strpos($userAgent, 'CyberSource') === false) {
             $forterToken = $this->customerSession->getForterToken() ? $this->customerSession->getForterToken() : $this->cookieManager->getCookie("forterToken");
+            $mobileUID = $this->customerSession->getForterMobileUid() ?? null;
+            if($mobileUID) {
+                return [
+                    "customerIP" => $remoteIp ? $remoteIp : $this->getIpFromOrder($remoteIp, $headers),
+                    "userAgent" => (string) $userAgent,
+                    "forterMobileUID" => (string) $mobileUID,
+                    "merchantDeviceIdentifier" => null,
+                    "fullHeaders" => substr(json_encode($headers) . "", 0, 4000)
+                ];
+            }
             return [
                 "customerIP" => $remoteIp ? $remoteIp : $this->getIpFromOrder($remoteIp, $headers),
                 "userAgent" => (string) $userAgent,
