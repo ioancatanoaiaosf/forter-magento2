@@ -23,6 +23,7 @@ use Magento\Review\Model\Review;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Wishlist\Controller\WishlistProviderInterface;
 
+
 /**
  * Class Order
  * @package Forter\Forter\Model
@@ -172,6 +173,10 @@ class Order
         } else {
             //If not a phone order - add the connectionInformation:
             $data['connectionInformation'] = $order->getPayment()->getAdditionalInformation('forter_client_details');
+        }
+
+        if ($this->session->getForterMobileUid()) {
+            $data['orderType'] = "MOBILE";
         }
 
         if ($this->forterConfig->isSandboxMode()) {
