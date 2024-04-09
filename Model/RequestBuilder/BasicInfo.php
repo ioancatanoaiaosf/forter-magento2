@@ -11,6 +11,7 @@
 namespace Forter\Forter\Model\RequestBuilder;
 
 use Magento\Customer\Model\Session;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Stdlib\CookieManagerInterface;
 
 /**
@@ -30,15 +31,22 @@ class BasicInfo
     protected $cookieManager;
 
     /**
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
      * @param Session $customerSession
      * @param CookieManagerInterface $cookieManager
      */
     public function __construct(
         Session $customerSession,
-        CookieManagerInterface $cookieManager
+        CookieManagerInterface $cookieManager,
+        RequestInterface $request
     ) {
         $this->customerSession = $customerSession;
         $this->cookieManager = $cookieManager;
+        $this->request = $request;
     }
 
     /**
@@ -55,13 +63,18 @@ class BasicInfo
         if (\strpos($userAgent, 'CyberSource') === false) {
             $forterToken = $this->customerSession->getForterToken() ? $this->customerSession->getForterToken() : $this->cookieManager->getCookie("forterToken");
             $mobileUID = $this->customerSession->getForterMobileUid() ?? null;
-            if($mobileUID) {
+
+            if ($mobileUID) {
+                $mobileData = json_decode($this->request->getContent());
+                $mobileAppVersion = $mobileData->mobileAppVersion ?? '';
+
                 return [
                     "customerIP" => $remoteIp ? $remoteIp : $this->getIpFromOrder($remoteIp, $headers),
                     "userAgent" => (string) $userAgent,
                     "forterMobileUID" => (string) $mobileUID,
                     "merchantDeviceIdentifier" => null,
-                    "fullHeaders" => substr(json_encode($headers) . "", 0, 4000)
+                    "fullHeaders" => substr(json_encode($headers) . "", 0, 4000),
+                    "mobileAppVersion" => $mobileAppVersion
                 ];
             }
             return [
