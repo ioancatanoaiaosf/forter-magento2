@@ -62,11 +62,12 @@ class BasicInfo
         }
         if (\strpos($userAgent, 'CyberSource') === false) {
             $forterToken = $this->customerSession->getForterToken() ? $this->customerSession->getForterToken() : $this->cookieManager->getCookie("forterToken");
-            $mobileUID = $this->customerSession->getForterMobileUid() ?? null;
+
+            $extraData = json_decode($this->request->getContent());
+            $mobileUID = $this->customerSession->getForterMobileUid() ??  $mobileData->mobileUID ?? null;
 
             if ($mobileUID) {
-                $mobileData = json_decode($this->request->getContent());
-                $mobileAppVersion = $mobileData->mobileAppVersion ?? '';
+                $mobileAppVersion = $extraData->mobileAppVersion ?? '';
 
                 return [
                     "customerIP" => $remoteIp ? $remoteIp : $this->getIpFromOrder($remoteIp, $headers),
