@@ -174,12 +174,13 @@ class Order
             $data['connectionInformation'] = $order->getPayment()->getAdditionalInformation('forter_client_details');
         }
 
-        $mobileData = json_decode($this->request->getContent());
+        $postData = json_decode($this->request->getContent());
+        $orderOrigin = $postData->orderOrigin ?? null;
 
-        if ($this->session->getForterMobileUid() || $mobileData->orderOrigin) {
-            if (strpos($mobileData->orderOrigin, 'ios') != false) {
+        if ($this->session->getForterMobileUid() || $orderOrigin) {
+            if (strpos($orderOrigin ?? '', 'ios') != false) {
                 $data['orderType'] = "iOS";
-            } elseif (strpos($mobileData->orderOrigin, 'android') != false) {
+            } elseif (strpos($orderOrigin ?? '', 'android') != false) {
                 $data['orderType'] = "Android";
             } else {
                 $data['orderType'] = "MOBILE";
