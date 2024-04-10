@@ -64,7 +64,7 @@ class BasicInfo
             $forterToken = $this->customerSession->getForterToken() ? $this->customerSession->getForterToken() : $this->cookieManager->getCookie("forterToken");
 
             $extraData = json_decode($this->request->getContent());
-            $mobileUID = $this->customerSession->getForterMobileUid() ??  $mobileData->mobileUID ?? null;
+            $mobileUID = $this->customerSession->getForterMobileUid() ??  $extraData->mobileUID ?? null;
 
             if ($mobileUID) {
                 $mobileAppVersion = $extraData->mobileAppVersion ?? '';
