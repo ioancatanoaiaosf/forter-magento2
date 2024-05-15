@@ -51,6 +51,12 @@ class Sessions extends Action implements HttpPostActionInterface, CsrfAwareActio
             if ($forterToken) {
                 $this->customerSession->setForterToken($forterToken);
             }
+
+            $mobileUID = $this->getRequest()->getHeader('Forter-MobileUid');
+            if ($mobileUID) {
+                $this->customerSession->setForterMobileUid($mobileUID);
+            }
+
         } catch (Exception $e) {
             $this->abstractApi->reportToForterOnCatch($e);
         }
