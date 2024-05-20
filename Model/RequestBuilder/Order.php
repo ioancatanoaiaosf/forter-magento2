@@ -174,6 +174,19 @@ class Order
             $data['connectionInformation'] = $order->getPayment()->getAdditionalInformation('forter_client_details');
         }
 
+        $postData = json_decode($this->request->getContent());
+        $orderOrigin = $postData->orderOrigin ?? null;
+
+        if ($this->session->getForterMobileUid() || $orderOrigin) {
+            if (strpos($orderOrigin ?? '', 'ios') != false) {
+                $data['orderType'] = "IOS";
+            } elseif (strpos($orderOrigin ?? '', 'android') != false) {
+                $data['orderType'] = "ANDROID";
+            } else {
+                $data['orderType'] = "MOBILE";
+            }
+        }
+
         if ($this->forterConfig->isSandboxMode()) {
             $data['additionalInformation'] = [
               'debug' => $order->debug()

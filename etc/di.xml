@@ -100,5 +100,9 @@
 			</argument>
 		</arguments>
 	</type>
+    <type name="Magento\Checkout\Model\PaymentInformationManagement">
+        <plugin name="after_GetPayment_Information" type="Forter\Forter\Plugin\Thirdparty\Adyen\PaymentInformation\PaymentInformationManagement" sortOrder="10" />
+    </type>
+
 
 </config>
