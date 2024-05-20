@@ -179,9 +179,9 @@ class Order
 
         if ($this->session->getForterMobileUid() || $orderOrigin) {
             if (strpos($orderOrigin ?? '', 'ios') != false) {
-                $data['orderType'] = "iOS";
+                $data['orderType'] = "IOS";
             } elseif (strpos($orderOrigin ?? '', 'android') != false) {
-                $data['orderType'] = "Android";
+                $data['orderType'] = "ANDROID";
             } else {
                 $data['orderType'] = "MOBILE";
             }
