@@ -7,6 +7,7 @@
  * @package  Forter_Forter
  * @author   Girit-Interactive (https://www.girit-tech.com/)
  */
+
 namespace Forter\Forter\Model\RequestBuilder;
 
 use Forter\Forter\Model\Config as ForterConfig;
@@ -92,7 +93,7 @@ class Order
     /**
      * Order constructor.
      * @param BasicInfoPrepare $basicInfoPrepare
-     * @param CartPrepare  $cartPrepare
+     * @param CartPrepare $cartPrepare
      * @param CustomerPrepere $customerPrepere
      * @param PaymentPrepere $paymentPrepere
      * @param OrderFactory $orderFactory
@@ -105,19 +106,19 @@ class Order
      * @param GiftCardPrepere $giftCardPrepere
      */
     public function __construct(
-        RequestInterface $request,
-        CartPrepere $cartPrepare,
-        BasicInfoPrepere $basicInfoPrepare,
-        CustomerPrepere $customerPrepere,
-        PaymentPrepere $paymentPrepere,
-        OrderFactory $orderFactory,
-        CategoryFactory $categoryFactory,
-        Session $session,
-        Review $review,
+        RequestInterface          $request,
+        CartPrepere               $cartPrepare,
+        BasicInfoPrepere          $basicInfoPrepare,
+        CustomerPrepere           $customerPrepere,
+        PaymentPrepere            $paymentPrepere,
+        OrderFactory              $orderFactory,
+        CategoryFactory           $categoryFactory,
+        Session                   $session,
+        Review                    $review,
         WishlistProviderInterface $wishlistProvider,
-        Subscriber $subscriber,
-        ForterConfig $forterConfig,
-        GiftCardPrepere $giftCardPrepere
+        Subscriber                $subscriber,
+        ForterConfig              $forterConfig,
+        GiftCardPrepere           $giftCardPrepere
     ) {
         $this->basicInfoPrepare = $basicInfoPrepare;
         $this->cartPrepare = $cartPrepare;
@@ -141,11 +142,10 @@ class Order
      */
     public function buildTransaction($order, $orderStage)
     {
-
         $data = [
             "orderId" => strval($order->getIncrementId()),
             "orderType" => "WEB",
-            "timeSentToForter" => time()*1000,
+            "timeSentToForter" => time() * 1000,
             "checkoutTime" => time(),
             "authorizationStep" => $orderStage === "BEFORE_PAYMENT_ACTION" ? "PRE_AUTHORIZATION" : "POST_AUTHORIZATION",
             "additionalIdentifiers" => $this->basicInfoPrepare->getAdditionalIdentifiers($order, $orderStage),
@@ -174,9 +174,22 @@ class Order
             $data['connectionInformation'] = $order->getPayment()->getAdditionalInformation('forter_client_details');
         }
 
+        $postData = json_decode($this->request->getContent());
+        $orderOrigin = $postData->orderOrigin ?? null;
+
+        if ($this->session->getForterMobileUid() || $orderOrigin) {
+            if (strpos($orderOrigin ?? '', 'ios') != false) {
+                $data['orderType'] = "iOS";
+            } elseif (strpos($orderOrigin ?? '', 'android') != false) {
+                $data['orderType'] = "Android";
+            } else {
+                $data['orderType'] = "MOBILE";
+            }
+        }
+
         if ($this->forterConfig->isSandboxMode()) {
             $data['additionalInformation'] = [
-              'debug' => $order->debug()
+                'debug' => $order->debug()
             ];
         }
 
