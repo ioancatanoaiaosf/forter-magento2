@@ -58,8 +58,10 @@ class RecommendationsDataBuilder implements BuilderInterface
 
             if ($forterPreAuth) {
                 $payment = $paymentDataObject->getPayment();
-                $logger->info('paymentLastTransID: ' . $payment->getLastTransId() ?? 'no paymentLastTransID');
-                $logger->info('orderState: ' . $payment->getOrder()->getState() ?? 'no orderState');
+                $logger->info('paymentLastTransID: ' . (bool)$payment->getLastTransId() ?? 'no paymentLastTransID');
+                $logger->info('paymentLastTransID is null : ' . is_null($payment->getLastTransId()) ?? 'paymentLastTransID is null');
+                $logger->info('orderState: ' . (bool)$payment->getOrder()->getState() ?? 'no orderState');
+                $logger->info('orderState is null: ' . is_null($payment->getOrder()->getState()) ?? 'true');
                 $logger->info('paymentMethod: ' . $payment->getMethod() ?? 'no paymentMethod');
                 $logger->info('paymetnData: ' . json_encode($payment->getData() ?? 'no paymentData'));
                 // Ensuring payment method is adyen_cc before proceeding
