@@ -46,15 +46,22 @@ class RecommendationsDataBuilder implements BuilderInterface
     public function build(array $buildSubject): ?array
     {
         $request = [];
-
+        $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/ForterDebug.log');
+        $logger = new \Zend_Log();
+        $logger->addWriter($writer);
+        $logger->info('IN recommendation class START');
         $paymentDataObject = \Magento\Payment\Gateway\Helper\SubjectReader::readPayment($buildSubject);
 
         if ($paymentDataObject instanceof PaymentDataObjectInterface) {
             $forterPreAuth = $this->isForterPreAuth() === '1' || $this->isForterPreAuth() === '4' ? true : false;
+            $logger->info('forterPreAuth: ' . $forterPreAuth);
 
             if ($forterPreAuth) {
                 $payment = $paymentDataObject->getPayment();
-
+                $logger->info('paymentLastTransID: ' . $payment->getLastTransId() ?? 'no paymentLastTransID');
+                $logger->info('orderState: ' . $payment->getOrder()->getState() ?? 'no orderState');
+                $logger->info('paymentMethod: ' . $payment->getMethod() ?? 'no paymentMethod');
+                $logger->info('paymetnData: ' . json_encode($payment->getData() ?? 'no paymentData'));
                 // Ensuring payment method is adyen_cc before proceeding
                 if ($payment && ($payment->getMethod() === "adyen_cc" || $payment->getMethod() === "adyen_cc_vault")  && !$payment->getLastTransId() && !$payment->getOrder()->getState()) {
 
@@ -66,11 +73,15 @@ class RecommendationsDataBuilder implements BuilderInterface
                     $order = $payment->getOrder();
 
                     $forterEntity = $this->entityHelper->getForterEntityByIncrementId($order->getIncrementId());
+                    $logger->info('orderID' . $order->getIncrementId() ?? 'no orderID');
+
                     if (!$forterEntity) {
+                        $logger->info('No Forter Entity');
                         return $request;
                     }
 
                     $forterResponse = $forterEntity->getForterResponse();
+                    $logger->info('forterResponse: ' . $forterResponse ?? 'no forterResponse');
                     //de facut
                     if ($forterResponse !== null) {
                         $response = json_decode($forterResponse, true);

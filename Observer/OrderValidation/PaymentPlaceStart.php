@@ -177,6 +177,11 @@ class PaymentPlaceStart implements ObserverInterface
         try {
             $this->emulate->stopEnvironmentEmulation();
 
+            $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/ForterDebug.log');
+            $logger = new \Zend_Log();
+            $logger->addWriter($writer);
+            $logger->info('PaymentPlaceStart Observer START');
+
             $order = $observer->getEvent()->getPayment()->getOrder();
             $storeId = $order->getStoreId();
 
@@ -217,6 +222,8 @@ class PaymentPlaceStart implements ObserverInterface
 
             $subMethod = $order->getPayment()->getCcType();
             $methodSetting = $this->config->getMappedPrePos($paymentMethod, $subMethod);
+            $logger->info('method Validation: ' . $methodSetting);
+            $logger->info('paymentMethod ' . $paymentMethod);
 
             if ($methodSetting === 'post') {
                 return;
@@ -241,6 +248,8 @@ class PaymentPlaceStart implements ObserverInterface
 
             //creare entitate
             $forterEntity = $this->entityHelper->createForterEntity($order, $storeId, $validationType);
+            $logger->info('created Forter Entity');
+
 
             $order->setData('sub_payment_method', $subMethod);
 
@@ -248,6 +257,7 @@ class PaymentPlaceStart implements ObserverInterface
 
             $url = self::VALIDATION_API_ENDPOINT . $order->getIncrementId();
             $forterResponse = $this->abstractApi->sendApiRequest($url, json_encode($data));
+            $logger->info('sent FORTER ORDER VALIDATION API REQUEST');
 
             $retries = $forterEntity->getRetries();
             $forterEntity->setRetries($retries++);
@@ -255,7 +265,7 @@ class PaymentPlaceStart implements ObserverInterface
             $this->forterLogger->forterConfig->log('BEFORE_PAYMENT_ACTION Order ' . $order->getIncrementId() . ' Data: ' . json_encode($data));
 
             $this->abstractApi->sendOrderStatus($order);
-
+            $logger->info('sent FORTER ORDER STATUS REQUEST');
 //            $order->setForterResponse($forterResponse);
 
             $this->forterLogger->forterConfig->log($forterResponse);
@@ -296,6 +306,8 @@ class PaymentPlaceStart implements ObserverInterface
         $message->metaData->forterDecision = $forterResponse->action ?? null;
         $this->forterLogger->SendLog($message);
         $this->decline->handlePreTransactionDescision($order);
+        $logger->info('END of observer PaymentPlaceStart');
+
     }
 
     /**
