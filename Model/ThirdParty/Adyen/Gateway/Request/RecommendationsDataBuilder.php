@@ -38,24 +38,14 @@ class RecommendationsDataBuilder implements BuilderInterface
     public function build(array $buildSubject): ?array
     {
         $request = [];
-        $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/ForterDebug_2422.log');
-        $logger = new \Zend_Log();
-        $logger->addWriter($writer);
-        $logger->info('IN recommendation class START');
+
         $paymentDataObject = \Magento\Payment\Gateway\Helper\SubjectReader::readPayment($buildSubject);
 
         if ($paymentDataObject instanceof PaymentDataObjectInterface) {
             $forterPreAuth = $this->isForterPreAuth() === '1' || $this->isForterPreAuth() === '4' ? true : false;
-            $logger->info('forterPreAuth: ' . $forterPreAuth);
 
             if ($forterPreAuth) {
                 $payment = $paymentDataObject->getPayment();
-                $logger->info('orderID' . $payment->getOrder()->getIncrementId() ?? 'no orderID');
-                $logger->info('paymentLastTransID: ' . $payment->getLastTransId() ?? 'no paymentLastTransID');
-                $logger->info('orderState: ' . $payment->getOrder()->getState() ?? 'no orderState');
-                $logger->info('paymentMethod: ' . $payment->getMethod() ?? 'no paymentMethod');
-                $logger->info('paymetnData: ' . json_encode($payment->getData() ?? []));
-                $logger->info('orderData: ' . json_encode($payment->getOrder()->getData() ?? []));
 
                 // Ensuring payment method is adyen_cc before proceeding
                 if ($payment && ($payment->getMethod() === "adyen_cc" || $payment->getMethod() === "adyen_cc_vault") && !$payment->getLastTransId() && !$payment->getOrder()->getState()) {
@@ -66,7 +56,6 @@ class RecommendationsDataBuilder implements BuilderInterface
                     }
 
                     $forterResponse = $payment->getOrder()->getForterResponse();
-                    $logger->info('forterResponse: ' . $forterResponse ?? 'no forterResponse');
 
                     if ($forterResponse !== null) {
                         $response = json_decode($forterResponse, true);
