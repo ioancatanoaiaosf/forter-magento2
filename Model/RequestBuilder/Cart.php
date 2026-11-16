@@ -94,7 +94,7 @@ class Cart
                     "productId" => $item->getProductId(),
                     "name" => $item->getName() . "",
                     "type" => $item->getData("is_virtual") ? "NON_TANGIBLE" : "TANGIBLE",
-                    "quantity" => (double)$item->getQtyOrdered() ,
+                    "quantity" => (float)$item->getQtyOrdered(),
                     "category" => $categories
                 ],
                 "itemSpecificData" => [
